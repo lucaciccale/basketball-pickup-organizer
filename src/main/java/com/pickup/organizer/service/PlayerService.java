@@ -1,5 +1,7 @@
 package com.pickup.organizer.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.pickup.organizer.entity.Player;
@@ -22,6 +24,10 @@ public class PlayerService {
         } else {
             throw new DuplicateEmailException("Email already taken!");
         }
+    }
+
+    public List<Player> getPlayers() {
+        return playerRepository.findAll();
     }
 }
 
