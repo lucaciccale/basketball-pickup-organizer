@@ -1,5 +1,7 @@
 package com.pickup.organizer.exception;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,9 +25,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        List<String> messages = 
+            ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(error -> error.getDefaultMessage())
+            .toList();
+        String message = String.join("; ", messages);
         return buildError(
             HttpStatus.BAD_REQUEST,
-            ex.getMessage(),
+            message,
             request.getRequestURI()
         );
     }
