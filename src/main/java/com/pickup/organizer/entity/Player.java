@@ -3,6 +3,7 @@ package com.pickup.organizer.entity;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,14 +33,15 @@ public class Player {
     private String lastName;
 
     @NotBlank(message = "Email is required!")
-    @Email(message = "Must be a valid email address")
+    @Email(message = "Must be a valid email address.")
     private String email;
 
     @NotBlank(message = "Password is required!")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotNull(message = "Birth date is required!")
-    @Past(message = "Must be a valid birth date")
+    @Past(message = "Must be a valid birth date.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 }
