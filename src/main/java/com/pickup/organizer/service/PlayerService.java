@@ -1,6 +1,6 @@
 package com.pickup.organizer.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -11,23 +11,23 @@ import com.pickup.organizer.repository.PlayerRepository;
 @Service
 public class PlayerService {
 
-    private PlayerRepository playerRepository;
+    private final PlayerRepository repository;
 
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    public PlayerService(PlayerRepository repository) {
+        this.repository = repository;
     }
 
     public Player registerPlayer(Player newPlayer) {
-        if (playerRepository.findByEmail(newPlayer.getEmail()) == null) {
-            playerRepository.save(newPlayer);
+        String email = newPlayer.getEmail();
+        if (repository.findByEmail(email) == null) {
+            repository.save(newPlayer);
             return newPlayer;
         } else {
-            throw new DuplicateEmailException("Email already taken!");
+            throw new DuplicateEmailException(email);
         }
     }
 
-    public List<Player> getPlayers() {
-        return playerRepository.findAll();
+    public Optional<Player> findById(Long id) {
+        return repository.findById(id);
     }
 }
-
