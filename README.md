@@ -1,7 +1,7 @@
 # 🏀 Basketball Pickup Game API
-Backend service build with Java and Spring Boot that allows users to organize pickup basketball games, join games, and automatically generate balanced teams based on player skill levels.
+Backend service built with Java and Spring Boot that allows users to organize pickup basketball games, join games, and automatically generate balanced teams based on player skill levels.
 
-Incudes an AI-powered feature that allows users to create games using natural langauge (e.g. "I want to play a 5v5 game tomorrow at 7pm in Brownsville, FL")
+Includes an AI-powered feature that lets users to create games using natural language (e.g. "I want to play a 5v5 game tomorrow at 7pm in Brownsville, FL")
 
 ## 🚀 Features
 - Player registration
