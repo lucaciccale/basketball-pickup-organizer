@@ -52,4 +52,10 @@ public class PlayerController {
         Page<Player> players = service.findPlayers(name, bornAfter, page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(players, assembler));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PlayerModel> replacePlayer(@PathVariable Long id, @Valid @RequestBody Player newPlayer) {
+        Player player = service.replacePlayer(newPlayer, id);
+        return ResponseEntity.ok(assembler.toModel(player));
+    }
 }

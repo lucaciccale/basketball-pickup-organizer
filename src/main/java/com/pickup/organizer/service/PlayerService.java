@@ -1,6 +1,7 @@
 package com.pickup.organizer.service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,18 @@ public class PlayerService {
             return repository.save(newPlayer);
         }
         throw new DuplicateEmailException(email);
+    }
+
+    public Player replacePlayer(Player newPlayer, Long id) {
+        if (repository.findById(id).isEmpty()) {
+            throw new PlayerNotFoundException(id);
+        }
+        Optional<Player> existingPlayer = repository.findByEmail(newPlayer.getEmail());
+        if (existingPlayer.isPresent() && !existingPlayer.get().getId().equals(id)) {
+            throw new DuplicateEmailException(newPlayer.getEmail());
+        }
+        newPlayer.setId(id);
+        return repository.save(newPlayer);
     }
 
     public Player findPlayerById(Long id) {
