@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,11 @@ public class Player {
     private Long id;
 
     @NotBlank(message = "Name is required!")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must only contain letters.")
     private String name;
 
     @NotBlank(message = "Last name is required!")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Last name must only contain letters.")
     private String lastName;
 
     @NotBlank(message = "Email is required!")
