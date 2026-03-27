@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,9 +41,11 @@ public class Player {
     private String email;
 
     @NotBlank(message = "Password is required!")
+    @Size(min = 8, message = "Password must contain at least 8 characters.")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    // TODO: figure out a way of validating the birthdate correctly
     @NotNull(message = "Birth date is required!")
     @Past(message = "Must be a valid birth date.")
     @JsonFormat(pattern = "yyyy-MM-dd")

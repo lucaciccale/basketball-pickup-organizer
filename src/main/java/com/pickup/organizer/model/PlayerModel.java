@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 public class PlayerModel extends RepresentationModel<PlayerModel> {
     private Long id;
