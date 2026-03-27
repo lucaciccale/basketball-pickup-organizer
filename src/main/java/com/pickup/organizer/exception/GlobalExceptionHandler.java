@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,17 @@ public class GlobalExceptionHandler {
             .map(error -> error.getDefaultMessage())
             .toList();
         String message = String.join("; ", messages);
+        return buildError(
+            HttpStatus.BAD_REQUEST,
+            message,
+            request.getRequestURI()
+        );
+    }
+
+    // TODO: handle invaid birth date format exception
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleInvalidFormatExceptions(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        String message = "Malformed JSON request.";
         return buildError(
             HttpStatus.BAD_REQUEST,
             message,
