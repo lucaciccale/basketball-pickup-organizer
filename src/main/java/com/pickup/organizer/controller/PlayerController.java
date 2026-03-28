@@ -65,4 +65,10 @@ public class PlayerController {
         Player player = service.updatePlayer(dto, id);
         return ResponseEntity.ok(assembler.toModel(player));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
+        service.deletePlayer(id);
+        return ResponseEntity.noContent().build();
+    }
 }

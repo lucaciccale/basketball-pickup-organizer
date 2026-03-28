@@ -29,7 +29,7 @@ public class PlayerService {
             throw new DuplicateEmailException(email);
         }
     }
-    
+
     public Player findPlayerById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new PlayerNotFoundException(id));
@@ -73,6 +73,13 @@ public class PlayerService {
         if (dto.getLastName() != null) player.setLastName(dto.getLastName());
         if (dto.getBirthDate() != null) player.setBirthDate(dto.getBirthDate());
         return repository.save(player);
+    }
+
+    @Transactional
+    public Player deletePlayer(Long id) {
+        Player player = findPlayerById(id);
+        repository.delete(player);
+        return player;
     }
 
 }

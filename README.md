@@ -52,6 +52,7 @@ spring.jpa.hibernate.ddl-auto=update
 - `GET /players (params: [name], [bornAfter], [page=0], [size=2])`
 - `PUT /players/{id}`
 - `PATCH /players/{id}`
+- `DELETE /players/{id}`
 
 ## 📥 Example request
 ### Player registration
