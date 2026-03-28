@@ -50,6 +50,8 @@ spring.jpa.hibernate.ddl-auto=update
 - `POST /players/register`
 - `GET /players/{id}`
 - `GET /players (params: [name], [bornAfter], [page=0], [size=2])`
+- `PUT /players/{id}`
+- `PATCH /players/{id}`
 
 ## 📥 Example request
 ### Player registration
