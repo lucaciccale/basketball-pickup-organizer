@@ -68,4 +68,22 @@ public class GlobalExceptionHandler {
             request.getRequestURI()
         );
     }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<ApiError> hanldeIncorrectPasswordException(IncorrectPasswordException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.BAD_REQUEST,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(SamePasswordException.class)
+    public ResponseEntity<ApiError> handleSamePasswordException(SamePasswordException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
 }

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import com.pickup.organizer.assembler.PlayerModelAssembler;
+import com.pickup.organizer.dto.PasswordUpdateDto;
 import com.pickup.organizer.dto.PlayerUpdateDto;
 import com.pickup.organizer.entity.Player;
 import com.pickup.organizer.model.PlayerModel;
@@ -57,6 +58,12 @@ public class PlayerController {
     @PutMapping("/{id}")
     public ResponseEntity<PlayerModel> replacePlayer(@PathVariable Long id, @Valid @RequestBody Player newPlayer) {
         Player player = service.replacePlayer(newPlayer, id);
+        return ResponseEntity.ok(assembler.toModel(player));
+    }
+    
+    @PutMapping("/{id}/password")
+    public ResponseEntity<PlayerModel> updatePassword(@PathVariable Long id, @Valid @RequestBody PasswordUpdateDto dto) {
+        Player player = service.updatePassword(dto, id);
         return ResponseEntity.ok(assembler.toModel(player));
     }
 

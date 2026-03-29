@@ -9,10 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pickup.organizer.dto.PasswordUpdateDto;
 import com.pickup.organizer.dto.PlayerUpdateDto;
 import com.pickup.organizer.entity.Player;
 import com.pickup.organizer.exception.DuplicateEmailException;
+import com.pickup.organizer.exception.IncorrectPasswordException;
 import com.pickup.organizer.exception.PlayerNotFoundException;
+import com.pickup.organizer.exception.SamePasswordException;
 import com.pickup.organizer.repository.PlayerRepository;
 
 import lombok.AllArgsConstructor;
@@ -72,6 +75,19 @@ public class PlayerService {
         if (dto.getName() != null) player.setName(dto.getName());
         if (dto.getLastName() != null) player.setLastName(dto.getLastName());
         if (dto.getBirthDate() != null) player.setBirthDate(dto.getBirthDate());
+        return repository.save(player);
+    }
+
+    @Transactional
+    public Player updatePassword(PasswordUpdateDto dto, Long id) {
+        Player player = findPlayerById(id);
+        if (!player.getPassword().equals(dto.getOldPassword())) {
+            throw new IncorrectPasswordException();
+        }
+        if (player.getPassword().equals(dto.getNewPassword())) {
+            throw new SamePasswordException();
+        }
+        player.setPassword(dto.getNewPassword());
         return repository.save(player);
     }
 
