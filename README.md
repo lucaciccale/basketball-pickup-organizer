@@ -51,6 +51,7 @@ spring.jpa.hibernate.ddl-auto=update
 - `GET /players/{id}`
 - `GET /players (params: [name], [bornAfter], [page=0], [size=2])`
 - `PUT /players/{id}`
+- `PUT /players/{id}/password`
 - `PATCH /players/{id}`
 - `DELETE /players/{id}`
 
