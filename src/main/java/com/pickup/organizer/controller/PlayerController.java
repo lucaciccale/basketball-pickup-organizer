@@ -3,7 +3,8 @@ package com.pickup.organizer.controller;
 import java.net.URI;
 import java.time.LocalDate;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -34,7 +35,7 @@ public class PlayerController {
     @PostMapping("/register")
     public ResponseEntity<PlayerModel> registerPlayer(@Valid @RequestBody Player newPlayer) {
         Player player = service.registerPlayer(newPlayer);
-        URI uri = linkTo(PlayerController.class).slash(player.getId()).toUri();
+        URI uri = linkTo(methodOn(PlayerController.class).getPlayer(player.getId())).toUri();
         return ResponseEntity.created(uri).body(assembler.toModel(player));
     }
 
