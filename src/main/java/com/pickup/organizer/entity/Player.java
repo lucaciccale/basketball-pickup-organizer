@@ -52,4 +52,5 @@ public class Player {
     @Past(message = "Must be a valid birth date.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+
 }

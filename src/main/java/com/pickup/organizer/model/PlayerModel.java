@@ -12,9 +12,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 public class PlayerModel extends RepresentationModel<PlayerModel> {
+
     private Long id;
+
     private String name;
+
     private String lastName;
+
     private String email;
+
     private LocalDate birthDate;
+
 }

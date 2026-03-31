@@ -79,4 +79,5 @@ public class PlayerController {
         service.deletePlayer(id);
         return ResponseEntity.noContent().build();
     }
+
 }

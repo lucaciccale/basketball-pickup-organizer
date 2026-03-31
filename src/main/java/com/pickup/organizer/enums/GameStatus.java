@@ -11,4 +11,5 @@ public enum GameStatus {
     COMPLETED,
 
     CANCELLED
+
 }

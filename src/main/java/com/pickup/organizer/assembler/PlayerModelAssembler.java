@@ -28,4 +28,5 @@ public class PlayerModelAssembler extends RepresentationModelAssemblerSupport<Pl
         model.add(linkTo(methodOn(PlayerController.class).getPlayer(player.getId())).withSelfRel());
         return model;
     }
+
 }
