@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.pickup.organizer.exception.player.*;
+import com.pickup.organizer.exception.game.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -88,4 +89,23 @@ public class GlobalExceptionHandler {
             request.getRequestURI()
         );
     }
+
+    @ExceptionHandler(GameNotFoundException.class)
+    public ResponseEntity<ApiError> handleGameNotFoundException(GameNotFoundException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.NOT_FOUND,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(InvalidGameTimeException.class)
+    public ResponseEntity<ApiError> handleInvalidGameTimeException(InvalidGameTimeException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.BAD_REQUEST,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
 }
