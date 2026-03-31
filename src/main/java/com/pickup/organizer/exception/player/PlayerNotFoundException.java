@@ -1,4 +1,4 @@
-package com.pickup.organizer.exception;
+package com.pickup.organizer.exception.player;
 
 public class PlayerNotFoundException extends RuntimeException {
     public PlayerNotFoundException(Long id) {

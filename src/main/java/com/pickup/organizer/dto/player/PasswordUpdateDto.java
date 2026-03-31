@@ -1,4 +1,4 @@
-package com.pickup.organizer.dto;
+package com.pickup.organizer.dto.player;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

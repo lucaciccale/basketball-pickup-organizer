@@ -16,8 +16,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import com.pickup.organizer.assembler.PlayerModelAssembler;
-import com.pickup.organizer.dto.PasswordUpdateDto;
-import com.pickup.organizer.dto.PlayerUpdateDto;
+import com.pickup.organizer.dto.player.PasswordUpdateDto;
+import com.pickup.organizer.dto.player.PlayerUpdateDto;
 import com.pickup.organizer.entity.Player;
 import com.pickup.organizer.model.PlayerModel;
 import com.pickup.organizer.service.PlayerService;

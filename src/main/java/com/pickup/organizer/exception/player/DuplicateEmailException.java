@@ -1,4 +1,4 @@
-package com.pickup.organizer.exception;
+package com.pickup.organizer.exception.player;
 
 public class DuplicateEmailException extends RuntimeException {
     public DuplicateEmailException(String email) {

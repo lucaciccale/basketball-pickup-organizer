@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import com.pickup.organizer.exception.player.*;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     

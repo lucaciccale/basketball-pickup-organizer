@@ -9,13 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pickup.organizer.dto.PasswordUpdateDto;
-import com.pickup.organizer.dto.PlayerUpdateDto;
+import com.pickup.organizer.dto.player.*;
 import com.pickup.organizer.entity.Player;
-import com.pickup.organizer.exception.DuplicateEmailException;
-import com.pickup.organizer.exception.IncorrectPasswordException;
-import com.pickup.organizer.exception.PlayerNotFoundException;
-import com.pickup.organizer.exception.SamePasswordException;
+import com.pickup.organizer.exception.player.*;
 import com.pickup.organizer.repository.PlayerRepository;
 
 import lombok.AllArgsConstructor;
