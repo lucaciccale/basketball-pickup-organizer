@@ -22,27 +22,31 @@ Includes an **AI-powered** feature that lets users to create games using natural
 - **MySQL** database running locally (default port is `3306`).
 
 ### Database Configuration
-Update your `src/main/resources/application.properties` to match your local MySQL setup. For example:
+Copy the `.env.example` file to a new file named `.env` and update the values with your local MySQL setup:
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/{your_database_name}
-spring.datasource.username={your_username}
-spring.datasource.password={your_password}
-spring.jpa.hibernate.ddl-auto=update
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file:
+```env
+DB_URL=jdbc:mysql://localhost:3306/your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
 
 ### Commands
-- **Build the project:**
-  ```bash
-  ./mvnw clean install
-  ```
 - **Run the application:**
   ```bash
-  ./mvnw spring-boot:run
+  ./run.sh
+  ```
+- **Clean and run the application:**
+  ```bash
+  ./run.sh clean
   ```
 - **Run tests:**
   ```bash
-  ./mvnw test
+  ./run.sh test
   ```
 
 ## 📡 API Endpoints
@@ -54,6 +58,9 @@ spring.jpa.hibernate.ddl-auto=update
 - `PUT /players/{id}/password`
 - `PATCH /players/{id}`
 - `DELETE /players/{id}`
+
+### Games
+- `GET /games/{id}`
 
 ## 📥 Example request
 ### Player registration
