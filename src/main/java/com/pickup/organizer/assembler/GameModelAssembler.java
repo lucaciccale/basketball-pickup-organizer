@@ -4,11 +4,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.stereotype.Component;
 
 import com.pickup.organizer.controller.GameController;
 import com.pickup.organizer.entity.Game;
 import com.pickup.organizer.model.GameModel;
 
+@Component
 public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game, GameModel> {
 
     public GameModelAssembler() {
@@ -23,7 +25,7 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
             game.getMaxPlayers(),
             game.getStatus()
         );
-        // model.add(linkTo(methodOn(GameController.class).getGame(game.getId())).withSelfRel());
+        model.add(linkTo(methodOn(GameController.class).getGame(game.getId())).withSelfRel());
         return model;
     }
 
