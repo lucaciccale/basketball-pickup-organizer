@@ -108,4 +108,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(OverlappingGameException.class)
+    public ResponseEntity<ApiError> handleDuplicateLocationException(OverlappingGameException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
 }
