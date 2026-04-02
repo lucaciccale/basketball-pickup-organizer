@@ -1,7 +1,6 @@
 package com.pickup.organizer.service;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,8 +22,10 @@ public class PlayerService {
     private final PlayerRepository repository;
     
     private void checkEmailUniqueness(String email, Long id) {
-        Optional<Player> player = repository.findByEmail(email);
-        if (player.isPresent() && !player.get().getId().equals(id)) {
+        boolean exists = (id == null)
+            ? repository.existsByEmail(email)
+            : repository.existsByEmailAndIdNot(email, id);
+        if (exists) {
             throw new DuplicateEmailException(email);
         }
     }
@@ -55,7 +56,9 @@ public class PlayerService {
 
     @Transactional
     public Player replacePlayer(Player newPlayer, Long id) {
-        findPlayerById(id);
+        if (!repository.existsById(id)) {
+            throw new PlayerNotFoundException(id);
+        }
         checkEmailUniqueness(newPlayer.getEmail(), id);
         newPlayer.setId(id);
         return repository.save(newPlayer);
