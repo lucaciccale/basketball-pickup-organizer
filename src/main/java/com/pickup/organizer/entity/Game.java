@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -40,10 +41,12 @@ public class Game {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
 
-    @Min(value = 4, message = "Need at least 4 players (2v2).")
+    @NotNull(message = "Maximum number of players is required!")
+    @Min(value = 4, message = "Minimum number of players is 4 (2v2).")
     @Max(value = 10, message = "Maximum number of players is 10 (5v5).")
-    private int maxPlayers;
+    private Integer maxPlayers;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private GameStatus status;
 
