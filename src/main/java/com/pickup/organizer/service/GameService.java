@@ -2,6 +2,9 @@ package com.pickup.organizer.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,7 @@ import com.pickup.organizer.entity.Game;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
 import com.pickup.organizer.repository.GameRepository;
+import com.pickup.organizer.specification.GameSpecifications;
 
 @Service
 @AllArgsConstructor
@@ -61,6 +65,14 @@ public class GameService {
             .status(GameStatus.OPEN)
             .build();
         return repository.save(game);
+    }
+
+    public Page<Game> searchGames(GameStatus status, LocalDateTime from, LocalDateTime to, int page, int size) {
+        validateDateRange(from, to);
+        Specification<Game> spec = Specification
+            .where(GameSpecifications.hasStatus(status))
+            .and(GameSpecifications.isBetween(from, to));
+        return repository.findAll(spec, PageRequest.of(page, size));
     }
 
 }
