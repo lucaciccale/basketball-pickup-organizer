@@ -72,6 +72,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidBirthDateException.class)
+    public ResponseEntity<ApiError> handleInvalidBirthDateException(InvalidBirthDateException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.BAD_REQUEST,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ApiError> hanldeIncorrectPasswordException(IncorrectPasswordException ex, HttpServletRequest request) {
         return buildError(

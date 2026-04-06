@@ -52,7 +52,7 @@ public class PlayerController {
         @RequestParam(defaultValue = "0", required = false) int page,
         @RequestParam(defaultValue = "2", required = false) int size
     ) {
-        Page<Player> players = service.findPlayers(name, bornAfter, page, size);
+        Page<Player> players = service.searchPlayers(name, bornAfter, page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(players, assembler));
     }
 

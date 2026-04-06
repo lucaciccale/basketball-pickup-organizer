@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +12,7 @@ import com.pickup.organizer.dto.player.*;
 import com.pickup.organizer.entity.Player;
 import com.pickup.organizer.exception.player.*;
 import com.pickup.organizer.repository.PlayerRepository;
+import com.pickup.organizer.specification.PlayerSpecifications;
 
 import lombok.AllArgsConstructor;
 
@@ -35,17 +36,14 @@ public class PlayerService {
             .orElseThrow(() -> new PlayerNotFoundException(id));
     }
     
-    public Page<Player> findPlayers(String name, LocalDate birthDate, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (name != null && birthDate != null) {
-            return repository.findByNameStartsWithAndBirthDateAfter(name, birthDate, pageable);
-        } else if (name != null) {
-            return repository.findByNameStartsWith(name, pageable);
-        } else if (birthDate != null) {
-            return repository.findByBirthDateAfter(birthDate, pageable);
-        } else {
-            return repository.findAll(pageable);
+    public Page<Player> searchPlayers(String name, LocalDate birthDate, int page, int size) {
+        if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
+            throw new InvalidBirthDateException("Birth date cannot be in the future.");
         }
+        Specification<Player> spec = Specification
+            .where(PlayerSpecifications.nameStartsWith(name))
+            .and(PlayerSpecifications.isAfter(birthDate));
+        return repository.findAll(spec, PageRequest.of(page, size));
     }
 
     @Transactional
