@@ -26,6 +26,46 @@ public class GameService {
     private static final int MIN_TIME_IN_ADVANCE_HRS = 1;
     private static final int MAX_TIME_IN_ADVANCE_DAYS = 30;
 
+    private void validateDateRange(LocalDateTime from, LocalDateTime to) {
+        if (from != null && to != null && to.isBefore(from)) {
+            throw new InvalidDateRangeException("Parameter 'to' must be after 'from'.");
+        }
+        if ((from == null) != (to == null)) {
+            throw new InvalidDateRangeException("Parameters 'from' and 'to' must be provided together.");
+        }
+    }
+
+    private void validateGameTime(LocalDateTime dateTime) {
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
+        if (dateTime.isBefore(minAllowedTime)) {
+            throw new InvalidGameTimeException("Game must be scheduled at least 1 hour in advance.");
+        }
+        LocalDateTime maxAllowedTime = LocalDateTime.now().plusDays(MAX_TIME_IN_ADVANCE_DAYS);
+        if (dateTime.isAfter(maxAllowedTime)) {
+            throw new InvalidGameTimeException("Game cannot be scheduled more than 30 days in advance.");
+        }
+    }
+
+    private void ensureNoOverlappingGames(String location, LocalDateTime dateTime) {
+        LocalDateTime startMinusGameDuration = dateTime.minusHours(GAME_DURATION_HRS);
+        LocalDateTime startPlusGameDuration = dateTime.plusHours(GAME_DURATION_HRS);
+        if (repository.existsOverlappingGameAtLocation(
+                location,
+                GameStatus.OPEN,
+                startMinusGameDuration,
+                startPlusGameDuration
+        )) {
+            throw new OverlappingGameException(location);
+        }
+    }
+
+    private String normalizeLocation(String location) {
+        return location
+            .trim()
+            .toUpperCase()
+            .replaceAll("\\s+", " ");
+    }
+
     public Game findGameById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new GameNotFoundException(id));
@@ -33,31 +73,9 @@ public class GameService {
 
     @Transactional
     public Game createGame(GameCreateDto newGame) {
-        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
-        if (newGame.getDateTime().isBefore(minAllowedTime)) {
-            throw new InvalidGameTimeException("Game must be scheduled at least 1 hour in advance.");
-        }
-
-        LocalDateTime maxAllowedTime = LocalDateTime.now().plusDays(MAX_TIME_IN_ADVANCE_DAYS);
-        if (newGame.getDateTime().isAfter(maxAllowedTime)) {
-            throw new InvalidGameTimeException("Game cannot be scheduled more than 30 days in advance.");
-        }
-
-        String location = newGame.getLocation()
-            .trim()
-            .toUpperCase()
-            .replaceAll("\\s+", " ");
-        LocalDateTime startMinusGameDuration = newGame.getDateTime().minusHours(GAME_DURATION_HRS);
-        LocalDateTime startPlusGameDuration = newGame.getDateTime().plusHours(GAME_DURATION_HRS);
-        if (repository.existsOverlappingGameAtLocation(
-            location,
-            GameStatus.OPEN,
-            startMinusGameDuration,
-            startPlusGameDuration
-        )) {
-            throw new OverlappingGameException(location);
-        }
-
+        validateGameTime(newGame.getDateTime());
+        String location = normalizeLocation(newGame.getLocation());
+        ensureNoOverlappingGames(location, newGame.getDateTime());
         Game game = Game.builder()
             .location(location)
             .dateTime(newGame.getDateTime())
