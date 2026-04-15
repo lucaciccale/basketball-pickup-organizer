@@ -59,6 +59,11 @@ public class GameService {
         }
     }
 
+    private void validateNewGame(String location, LocalDateTime dateTime) {
+        validateGameTime(dateTime);
+        ensureNoOverlappingGames(location, dateTime);
+    }
+
     private String normalizeLocation(String location) {
         return location
             .trim()
@@ -73,9 +78,8 @@ public class GameService {
 
     @Transactional
     public Game createGame(GameCreateDto newGame) {
-        validateGameTime(newGame.getDateTime());
         String location = normalizeLocation(newGame.getLocation());
-        ensureNoOverlappingGames(location, newGame.getDateTime());
+        validateNewGame(location, newGame.getDateTime());
         Game game = Game.builder()
             .location(location)
             .dateTime(newGame.getDateTime())
