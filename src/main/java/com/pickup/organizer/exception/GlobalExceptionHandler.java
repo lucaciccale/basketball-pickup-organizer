@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ApiError> hanldeIncorrectPasswordException(IncorrectPasswordException ex, HttpServletRequest request) {
         return buildError(
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.UNAUTHORIZED,
             ex.getMessage(),
             request.getRequestURI()
         );
@@ -130,6 +130,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleInvalidDateRangeException(InvalidDateRangeException ex, HttpServletRequest request) {
         return buildError(
             HttpStatus.BAD_REQUEST,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(CancellationNoticePeriodException.class)
+    public ResponseEntity<ApiError> handleCancellationNoticePeriodException(CancellationNoticePeriodException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(GameAlreadyInProgressException.class)
+    public ResponseEntity<ApiError> handleGameAlreadyInProgressException(GameAlreadyInProgressException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(PastGameCancellationException.class)
+    public ResponseEntity<ApiError> handlePastGameCancellationException(PastGameCancellationException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
             ex.getMessage(),
             request.getRequestURI()
         );
