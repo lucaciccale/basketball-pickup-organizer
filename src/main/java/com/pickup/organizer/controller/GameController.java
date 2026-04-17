@@ -62,5 +62,11 @@ public class GameController {
         Page<Game> games = service.searchGames(status, from, to, page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(games, assembler));
     }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<GameModel> cancelGame(@PathVariable Long id) {
+        Game game = service.cancelGame(id);
+        return ResponseEntity.ok(assembler.toModel(game));
+    }
     
 }

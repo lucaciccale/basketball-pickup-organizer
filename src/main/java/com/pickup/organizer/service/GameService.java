@@ -22,9 +22,9 @@ import com.pickup.organizer.specification.GameSpecifications;
 public class GameService {
 
     private final GameRepository repository;
-    private static final int GAME_DURATION_HRS = 2;
-    private static final int MIN_TIME_IN_ADVANCE_HRS = 1;
-    private static final int MAX_TIME_IN_ADVANCE_DAYS = 30;
+    public static final int GAME_DURATION_HRS = 2;
+    public static final int MIN_TIME_IN_ADVANCE_HRS = 1;
+    public static final int MAX_TIME_IN_ADVANCE_DAYS = 30;
 
     private void validateDateRange(LocalDateTime from, LocalDateTime to) {
         if (from != null && to != null && to.isBefore(from)) {
@@ -95,6 +95,23 @@ public class GameService {
             .where(GameSpecifications.hasStatus(status))
             .and(GameSpecifications.isBetween(from, to));
         return repository.findAll(spec, PageRequest.of(page, size));
+    }
+
+    @Transactional
+    public Game cancelGame(Long id) {
+        Game game = findGameById(id);
+        if (game.getDateTime().isBefore(LocalDateTime.now())) {
+            throw new PastGameCancellationException();
+        }
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
+        if (game.getDateTime().isBefore(minAllowedTime)) {
+            throw new CancellationNoticePeriodException();
+        }
+        if (game.getStatus() == GameStatus.IN_PROGRESS) {
+            throw new GameAlreadyInProgressException();
+        }
+        game.setStatus(GameStatus.CANCELLED);
+        return repository.save(game);
     }
 
 }
