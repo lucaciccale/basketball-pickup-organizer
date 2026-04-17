@@ -60,7 +60,10 @@ DB_PASSWORD=your_password
 - `DELETE /players/{id}`
 
 ### Games
+- `POST /games/create`
+- `POST /games/{id}/cancel`
 - `GET /games/{id}`
+- `GET /games (params: [status], [from], [to], [page=0], [size=2])`
 
 ## 📥 Example request
 ### Player registration
