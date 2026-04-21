@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 
-import com.pickup.organizer.dto.game.GameCreateDto;
+import com.pickup.organizer.dto.game.*;
 import com.pickup.organizer.entity.Game;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
@@ -127,5 +127,13 @@ public class GameService {
     public void deleteGame(Long id) {
         repository.delete(findGameById(id));
     }
+
+    // TODO: implement properly
+    // @Transactional
+    // public Game updateGameCapacity(Long id, GameCapacityUpdateDto dto) {
+    //     Game game = findGameById(id);
+    //     game.setMaxPlayers(dto.getMaxPlayers());
+    //     return repository.save(game);
+    // }
 
 }
