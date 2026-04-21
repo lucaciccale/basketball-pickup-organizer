@@ -53,7 +53,7 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player replacePlayer(Player newPlayer, Long id) {
+    public Player replacePlayer(Long id, Player newPlayer) {
         if (!repository.existsById(id)) {
             throw new PlayerNotFoundException(id);
         }
@@ -63,7 +63,7 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player updatePlayer(PlayerUpdateDto dto, Long id) {
+    public Player updatePlayer(Long id, PlayerUpdateDto dto) {
         Player player = findPlayerById(id); 
         if (dto.getEmail() != null) {
             checkEmailUniqueness(dto.getEmail(), id);
@@ -76,7 +76,7 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player updatePassword(PasswordUpdateDto dto, Long id) {
+    public Player updatePassword(Long id, PasswordUpdateDto dto) {
         Player player = findPlayerById(id);
         if (!player.getPassword().equals(dto.getOldPassword())) {
             throw new IncorrectPasswordException();
