@@ -1,6 +1,7 @@
 package com.pickup.organizer.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,13 +15,13 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
     @Query(
         "SELECT COUNT(g) > 0 FROM Game g "
         + "WHERE g.location = :location "
-        + "AND g.status = :status "  
+        + "AND g.status IN :statuses "  
         + "AND g.dateTime > :startMinusGameDuration "
         + "AND g.dateTime < :startPlusGameDuration"
     )
     boolean existsOverlappingGameAtLocation(
         String location,
-        GameStatus status,
+        List<GameStatus> statuses,
         LocalDateTime startMinusGameDuration,
         LocalDateTime startPlusGameDuration
     );

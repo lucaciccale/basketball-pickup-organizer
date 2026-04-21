@@ -1,6 +1,7 @@
 package com.pickup.organizer.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,9 +50,14 @@ public class GameService {
     private void ensureNoOverlappingGames(String location, LocalDateTime dateTime) {
         LocalDateTime startMinusGameDuration = dateTime.minusHours(GAME_DURATION_HRS);
         LocalDateTime startPlusGameDuration = dateTime.plusHours(GAME_DURATION_HRS);
+        List<GameStatus> statuses = List.of(
+            GameStatus.OPEN,
+            GameStatus.FULL,
+            GameStatus.IN_PROGRESS
+        );
         if (repository.existsOverlappingGameAtLocation(
                 location,
-                GameStatus.OPEN,
+                statuses,
                 startMinusGameDuration,
                 startPlusGameDuration
         )) {
