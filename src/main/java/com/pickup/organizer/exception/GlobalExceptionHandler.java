@@ -135,26 +135,8 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(CancellationNoticePeriodException.class)
-    public ResponseEntity<ApiError> handleCancellationNoticePeriodException(CancellationNoticePeriodException ex, HttpServletRequest request) {
-        return buildError(
-            HttpStatus.CONFLICT,
-            ex.getMessage(),
-            request.getRequestURI()
-        );
-    }
-
-    @ExceptionHandler(GameAlreadyInProgressException.class)
-    public ResponseEntity<ApiError> handleGameAlreadyInProgressException(GameAlreadyInProgressException ex, HttpServletRequest request) {
-        return buildError(
-            HttpStatus.CONFLICT,
-            ex.getMessage(),
-            request.getRequestURI()
-        );
-    }
-
-    @ExceptionHandler(PastGameCancellationException.class)
-    public ResponseEntity<ApiError> handlePastGameCancellationException(PastGameCancellationException ex, HttpServletRequest request) {
+    @ExceptionHandler(GameCancellationException.class)
+    public ResponseEntity<ApiError> handleGameCancellationException(GameCancellationException ex, HttpServletRequest request) {
         return buildError(
             HttpStatus.CONFLICT,
             ex.getMessage(),

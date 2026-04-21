@@ -101,14 +101,17 @@ public class GameService {
     public Game cancelGame(Long id) {
         Game game = findGameById(id);
         if (game.getDateTime().isBefore(LocalDateTime.now())) {
-            throw new PastGameCancellationException();
+            throw new GameCancellationException("Cannot cancel a game that has already finished.");
         }
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
         if (game.getDateTime().isBefore(minAllowedTime)) {
-            throw new CancellationNoticePeriodException();
+            throw new GameCancellationException("Game must be cancelled at least " + MIN_TIME_IN_ADVANCE_HRS + " hours in advance.");
         }
         if (game.getStatus() == GameStatus.IN_PROGRESS) {
-            throw new GameAlreadyInProgressException();
+            throw new GameCancellationException("Cannot cancel a game that is already in progress.");
+        }
+        if (game.getStatus() == GameStatus.CANCELLED) {
+            throw new GameCancellationException("Cannot cancel a game that is already cancelled.");
         }
         game.setStatus(GameStatus.CANCELLED);
         return repository.save(game);
