@@ -51,7 +51,7 @@ DB_PASSWORD=your_password
 
 ## 📡 API Endpoints
 ### Players
-- `POST /players/register`
+- `POST /players`
 - `GET /players/{id}`
 - `GET /players (params: [name], [bornAfter], [page=0], [size=2])`
 - `PUT /players/{id}`
@@ -60,7 +60,7 @@ DB_PASSWORD=your_password
 - `DELETE /players/{id}`
 
 ### Games
-- `POST /games/create`
+- `POST /games`
 - `POST /games/{id}/cancel`
 - `GET /games/{id}`
 - `GET /games (params: [status], [from], [to], [page=0], [size=2])`

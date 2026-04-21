@@ -32,7 +32,7 @@ public class PlayerController {
     private final PlayerModelAssembler assembler;
     private final PagedResourcesAssembler<Player> pagedResourcesAssembler;
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<PlayerModel> registerPlayer(@Valid @RequestBody Player newPlayer) {
         Player player = service.registerPlayer(newPlayer);
         URI uri = linkTo(methodOn(PlayerController.class).getPlayer(player.getId())).toUri();

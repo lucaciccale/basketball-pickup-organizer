@@ -38,7 +38,7 @@ public class GameController {
     private final GameModelAssembler assembler;
     private final PagedResourcesAssembler<Game> pagedResourcesAssembler;
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<GameModel> createGame(@Valid @RequestBody GameCreateDto newGame) {
         Game game = service.createGame(newGame);
         URI uri = linkTo(methodOn(GameController.class).getGame(game.getId())).toUri();
