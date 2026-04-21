@@ -117,4 +117,9 @@ public class GameService {
         return repository.save(game);
     }
 
+    @Transactional
+    public void deleteGame(Long id) {
+        repository.delete(findGameById(id));
+    }
+
 }
