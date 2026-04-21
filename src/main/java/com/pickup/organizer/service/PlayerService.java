@@ -89,10 +89,8 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player deletePlayer(Long id) {
-        Player player = findPlayerById(id);
-        repository.delete(player);
-        return player;
+    public void deletePlayer(Long id) {
+        repository.delete(findPlayerById(id));
     }
 
 }
