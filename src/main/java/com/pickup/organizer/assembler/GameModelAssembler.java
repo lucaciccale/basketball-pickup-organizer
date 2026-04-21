@@ -8,7 +8,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static com.pickup.organizer.service.GameService.MIN_TIME_IN_ADVANCE_HRS;
+import static com.pickup.organizer.service.GameService.MIN_HRS_IN_ADVANCE;
 
 import com.pickup.organizer.controller.GameController;
 import com.pickup.organizer.entity.Game;
@@ -43,7 +43,7 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
     }
 
     private boolean isCancellable(Game game) {
-        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         return game.getDateTime().isAfter(minAllowedTime)
             && (game.getStatus() == GameStatus.OPEN || game.getStatus() == GameStatus.FULL);
     }

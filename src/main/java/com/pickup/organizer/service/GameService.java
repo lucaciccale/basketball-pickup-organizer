@@ -24,8 +24,8 @@ public class GameService {
 
     private final GameRepository repository;
     public static final int GAME_DURATION_HRS = 2;
-    public static final int MIN_TIME_IN_ADVANCE_HRS = 1;
-    public static final int MAX_TIME_IN_ADVANCE_DAYS = 30;
+    public static final int MIN_HRS_IN_ADVANCE = 1;
+    public static final int MAX_DAYS_IN_ADVANCE = 30;
 
     private void validateDateRange(LocalDateTime from, LocalDateTime to) {
         if (from != null && to != null && to.isBefore(from)) {
@@ -37,11 +37,11 @@ public class GameService {
     }
 
     private void validateGameTime(LocalDateTime dateTime) {
-        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         if (dateTime.isBefore(minAllowedTime)) {
             throw new InvalidGameTimeException("Game must be scheduled at least 1 hour in advance.");
         }
-        LocalDateTime maxAllowedTime = LocalDateTime.now().plusDays(MAX_TIME_IN_ADVANCE_DAYS);
+        LocalDateTime maxAllowedTime = LocalDateTime.now().plusDays(MAX_DAYS_IN_ADVANCE);
         if (dateTime.isAfter(maxAllowedTime)) {
             throw new InvalidGameTimeException("Game cannot be scheduled more than 30 days in advance.");
         }
@@ -109,9 +109,9 @@ public class GameService {
         if (game.getDateTime().isBefore(LocalDateTime.now())) {
             throw new GameCancellationException("Cannot cancel a game that has already finished.");
         }
-        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_TIME_IN_ADVANCE_HRS);
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
-            throw new GameCancellationException("Game must be cancelled at least " + MIN_TIME_IN_ADVANCE_HRS + " hours in advance.");
+            throw new GameCancellationException("Game must be cancelled at least " + MIN_HRS_IN_ADVANCE + " hour/s in advance.");
         }
         if (game.getStatus() == GameStatus.IN_PROGRESS) {
             throw new GameCancellationException("Cannot cancel a game that is already in progress.");
