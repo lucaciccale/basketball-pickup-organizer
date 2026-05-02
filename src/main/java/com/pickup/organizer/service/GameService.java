@@ -15,6 +15,7 @@ import com.pickup.organizer.dto.game.*;
 import com.pickup.organizer.entity.Game;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
+import com.pickup.organizer.repository.GameParticipantRepository;
 import com.pickup.organizer.repository.GameRepository;
 import com.pickup.organizer.specification.GameSpecifications;
 
@@ -23,6 +24,8 @@ import com.pickup.organizer.specification.GameSpecifications;
 public class GameService {
 
     private final GameRepository repository;
+    private final GameParticipantRepository participantRepository;
+
     public static final int GAME_DURATION_HRS = 2;
     public static final int MIN_HRS_IN_ADVANCE = 1;
     public static final int MAX_DAYS_IN_ADVANCE = 30;
@@ -58,6 +61,18 @@ public class GameService {
         Game game = findGameById(id);
         validateCancelable(game);
         game.setStatus(GameStatus.CANCELLED);
+        return repository.save(game);
+    }
+
+    @Transactional
+    public Game updateGameCapacity(Long id, GameCapacityUpdateDto dto) {
+        Game game = findGameById(id);
+        validateUpdatable(game);
+        Long currentParticipants = participantRepository.countByGameId(id);
+        if (dto.getMaxPlayers() < currentParticipants) {
+            throw new InvalidCapacityException(dto.getMaxPlayers(), currentParticipants);
+        }
+        game.setMaxPlayers(dto.getMaxPlayers());
         return repository.save(game);
     }
 
@@ -122,6 +137,22 @@ public class GameService {
         }
         if (game.getStatus() == GameStatus.CANCELLED) {
             throw new GameCancellationException("Cannot cancel a game that is already cancelled.");
+        }
+    }
+
+    private void validateUpdatable(Game game) {
+        if (game.getDateTime().isBefore(LocalDateTime.now())) {
+            throw new GameUpdateException("Cannot update a game that has already finished.");
+        }
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
+        if (game.getDateTime().isBefore(minAllowedTime)) {
+            throw new GameUpdateException("Game must be updated at least '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
+        }
+        if (game.getStatus() == GameStatus.IN_PROGRESS) {
+            throw new GameUpdateException("Cannot update a game that is already in progress.");
+        }
+        if (game.getStatus() == GameStatus.CANCELLED) {
+            throw new GameUpdateException("Cannot update a game that is already cancelled.");
         }
     }
 

@@ -12,7 +12,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,14 +77,13 @@ public class GameController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: implement this in the service layer
-    // @PatchMapping("/{id}")
-    // public ResponseEntity<GameModel> updateGameCapacity(
-    //     @PathVariable Long id,
-    //     @Valid @RequestBody GameCapacityUpdateDto dto
-    // ) {
-    //     Game game = service.updateGameCapacity(id, dto);
-    //     return ResponseEntity.ok(assembler.toModel(game));
-    // }
+    @PatchMapping("/{id}")
+    public ResponseEntity<GameModel> updateGameCapacity(
+        @PathVariable Long id,
+        @Valid @RequestBody GameCapacityUpdateDto dto
+    ) {
+        Game game = service.updateGameCapacity(id, dto);
+        return ResponseEntity.ok(assembler.toModel(game));
+    }
     
 }

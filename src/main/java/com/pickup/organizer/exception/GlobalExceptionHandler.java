@@ -144,4 +144,22 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(GameUpdateException.class)
+    public ResponseEntity<ApiError> handleGameCancellationException(GameUpdateException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(InvalidCapacityException.class)
+    public ResponseEntity<ApiError> handleInvalidCapacityException(InvalidCapacityException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
 }
