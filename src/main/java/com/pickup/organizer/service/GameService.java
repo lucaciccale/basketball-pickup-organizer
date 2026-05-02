@@ -27,6 +27,45 @@ public class GameService {
     public static final int MIN_HRS_IN_ADVANCE = 1;
     public static final int MAX_DAYS_IN_ADVANCE = 30;
 
+    public Game findGameById(Long id) {
+        return repository.findById(id)
+            .orElseThrow(() -> new GameNotFoundException(id));
+    }
+
+    @Transactional
+    public Game createGame(GameCreateDto newGame) {
+        String location = normalizeLocation(newGame.getLocation());
+        validateNewGame(location, newGame.getDateTime());
+        Game game = Game.builder()
+            .location(location)
+            .dateTime(newGame.getDateTime())
+            .maxPlayers(newGame.getMaxPlayers())
+            .status(GameStatus.OPEN)
+            .build();
+        return repository.save(game);
+    }
+
+    public Page<Game> searchGames(GameStatus status, LocalDateTime from, LocalDateTime to, int page, int size) {
+        validateDateRange(from, to);
+        Specification<Game> spec = Specification
+            .where(GameSpecifications.hasStatus(status))
+            .and(GameSpecifications.isBetween(from, to));
+        return repository.findAll(spec, PageRequest.of(page, size));
+    }
+
+    @Transactional
+    public Game cancelGame(Long id) {
+        Game game = findGameById(id);
+        validateCancelable(game);
+        game.setStatus(GameStatus.CANCELLED);
+        return repository.save(game);
+    }
+
+    @Transactional
+    public void deleteGame(Long id) {
+        repository.delete(findGameById(id));
+    }
+
     private void validateDateRange(LocalDateTime from, LocalDateTime to) {
         if (from != null && to != null && to.isBefore(from)) {
             throw new InvalidDateRangeException("Parameter 'to' must be after 'from'.");
@@ -70,42 +109,7 @@ public class GameService {
         ensureNoOverlappingGames(location, dateTime);
     }
 
-    private String normalizeLocation(String location) {
-        return location
-            .trim()
-            .toUpperCase()
-            .replaceAll("\\s+", " ");
-    }
-
-    public Game findGameById(Long id) {
-        return repository.findById(id)
-            .orElseThrow(() -> new GameNotFoundException(id));
-    }
-
-    @Transactional
-    public Game createGame(GameCreateDto newGame) {
-        String location = normalizeLocation(newGame.getLocation());
-        validateNewGame(location, newGame.getDateTime());
-        Game game = Game.builder()
-            .location(location)
-            .dateTime(newGame.getDateTime())
-            .maxPlayers(newGame.getMaxPlayers())
-            .status(GameStatus.OPEN)
-            .build();
-        return repository.save(game);
-    }
-
-    public Page<Game> searchGames(GameStatus status, LocalDateTime from, LocalDateTime to, int page, int size) {
-        validateDateRange(from, to);
-        Specification<Game> spec = Specification
-            .where(GameSpecifications.hasStatus(status))
-            .and(GameSpecifications.isBetween(from, to));
-        return repository.findAll(spec, PageRequest.of(page, size));
-    }
-
-    @Transactional
-    public Game cancelGame(Long id) {
-        Game game = findGameById(id);
+    private void validateCancelable(Game game) {
         if (game.getDateTime().isBefore(LocalDateTime.now())) {
             throw new GameCancellationException("Cannot cancel a game that has already finished.");
         }
@@ -119,21 +123,13 @@ public class GameService {
         if (game.getStatus() == GameStatus.CANCELLED) {
             throw new GameCancellationException("Cannot cancel a game that is already cancelled.");
         }
-        game.setStatus(GameStatus.CANCELLED);
-        return repository.save(game);
     }
 
-    @Transactional
-    public void deleteGame(Long id) {
-        repository.delete(findGameById(id));
+    private String normalizeLocation(String location) {
+        return location
+            .trim()
+            .toUpperCase()
+            .replaceAll("\\s+", " ");
     }
-
-    // TODO: implement properly
-    // @Transactional
-    // public Game updateGameCapacity(Long id, GameCapacityUpdateDto dto) {
-    //     Game game = findGameById(id);
-    //     game.setMaxPlayers(dto.getMaxPlayers());
-    //     return repository.save(game);
-    // }
 
 }

@@ -22,15 +22,6 @@ public class PlayerService {
 
     private final PlayerRepository repository;
     
-    private void checkEmailUniqueness(String email, Long id) {
-        boolean exists = (id == null)
-            ? repository.existsByEmail(email)
-            : repository.existsByEmailAndIdNot(email, id);
-        if (exists) {
-            throw new DuplicateEmailException(email);
-        }
-    }
-
     public Player findPlayerById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new PlayerNotFoundException(id));
@@ -91,6 +82,15 @@ public class PlayerService {
     @Transactional
     public void deletePlayer(Long id) {
         repository.delete(findPlayerById(id));
+    }
+
+    private void checkEmailUniqueness(String email, Long id) {
+        boolean exists = (id == null)
+            ? repository.existsByEmail(email)
+            : repository.existsByEmailAndIdNot(email, id);
+        if (exists) {
+            throw new DuplicateEmailException(email);
+        }
     }
 
 }
