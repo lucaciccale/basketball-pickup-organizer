@@ -69,7 +69,7 @@ DB_PASSWORD=your_password
 
 ## 📥 Example request
 ### Player registration
-- `POST /players/register`
+- `POST /players`
 
 **Request body:**
 ```json
