@@ -47,6 +47,12 @@ public class GameController {
         return ResponseEntity.created(uri).body(assembler.toModel(game));
     }
 
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<GameModel> cancelGame(@PathVariable Long id) {
+        Game game = service.cancelGame(id);
+        return ResponseEntity.ok(assembler.toModel(game));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GameModel> getGame(@PathVariable Long id) {
         Game game = service.findGameById(id);
@@ -65,25 +71,19 @@ public class GameController {
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(games, assembler));
     }
 
-    @PostMapping("/{id}/cancel")
-    public ResponseEntity<GameModel> cancelGame(@PathVariable Long id) {
-        Game game = service.cancelGame(id);
+    @PatchMapping("/{id}")
+    public ResponseEntity<GameModel> updateGame(
+        @PathVariable Long id,
+        @Valid @RequestBody GameUpdateDto dto
+    ) {
+        Game game = service.updateGame(id, dto);
         return ResponseEntity.ok(assembler.toModel(game));
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         service.deleteGame(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<GameModel> updateGameCapacity(
-        @PathVariable Long id,
-        @Valid @RequestBody GameCapacityUpdateDto dto
-    ) {
-        Game game = service.updateGameCapacity(id, dto);
-        return ResponseEntity.ok(assembler.toModel(game));
-    }
-    
 }

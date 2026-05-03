@@ -17,13 +17,15 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
         + "WHERE g.location = :location "
         + "AND g.status IN :statuses "  
         + "AND g.dateTime > :startMinusGameDuration "
-        + "AND g.dateTime < :startPlusGameDuration"
+        + "AND g.dateTime < :startPlusGameDuration "
+        + "AND (:excludeId IS NULL OR :excludeId <> g.id)"
     )
     boolean existsOverlappingGameAtLocation(
         String location,
         List<GameStatus> statuses,
         LocalDateTime startMinusGameDuration,
-        LocalDateTime startPlusGameDuration
+        LocalDateTime startPlusGameDuration,
+        Long excludeId
     );
 
 }
