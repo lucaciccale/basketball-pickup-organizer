@@ -22,6 +22,12 @@ public class PlayerService {
 
     private final PlayerRepository repository;
     
+    @Transactional
+    public Player registerPlayer(Player newPlayer) {
+        checkEmailUniqueness(newPlayer.getEmail(), null);
+        return repository.save(newPlayer);
+    }
+
     public Player findPlayerById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new PlayerNotFoundException(id));
@@ -38,12 +44,6 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player registerPlayer(Player newPlayer) {
-        checkEmailUniqueness(newPlayer.getEmail(), null);
-        return repository.save(newPlayer);
-    }
-
-    @Transactional
     public Player replacePlayer(Long id, Player newPlayer) {
         if (!repository.existsById(id)) {
             throw new PlayerNotFoundException(id);
@@ -51,19 +51,6 @@ public class PlayerService {
         checkEmailUniqueness(newPlayer.getEmail(), id);
         newPlayer.setId(id);
         return repository.save(newPlayer);
-    }
-
-    @Transactional
-    public Player updatePlayer(Long id, PlayerUpdateDto dto) {
-        Player player = findPlayerById(id); 
-        if (dto.getEmail() != null) {
-            checkEmailUniqueness(dto.getEmail(), id);
-            player.setEmail(dto.getEmail());
-        }
-        if (dto.getName() != null) player.setName(dto.getName());
-        if (dto.getLastName() != null) player.setLastName(dto.getLastName());
-        if (dto.getBirthDate() != null) player.setBirthDate(dto.getBirthDate());
-        return repository.save(player);
     }
 
     @Transactional
@@ -76,6 +63,19 @@ public class PlayerService {
             throw new SamePasswordException();
         }
         player.setPassword(dto.getNewPassword());
+        return repository.save(player);
+    }
+
+    @Transactional
+    public Player updatePlayer(Long id, PlayerUpdateDto dto) {
+        Player player = findPlayerById(id); 
+        if (dto.getEmail() != null) {
+            checkEmailUniqueness(dto.getEmail(), id);
+            player.setEmail(dto.getEmail());
+        }
+        if (dto.getName() != null) player.setName(dto.getName());
+        if (dto.getLastName() != null) player.setLastName(dto.getLastName());
+        if (dto.getBirthDate() != null) player.setBirthDate(dto.getBirthDate());
         return repository.save(player);
     }
 
