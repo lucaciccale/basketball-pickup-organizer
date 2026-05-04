@@ -178,7 +178,7 @@ public class GameService {
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameUpdateException("Game capacity must be updated at least '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
         }
-        Long currentParticipants = participantRepository.countByGameId(game.getId());
+        Integer currentParticipants = participantRepository.countByGameId(game.getId());
         if (dto.getMaxPlayers() < currentParticipants) {
             throw new InvalidCapacityException(dto.getMaxPlayers(), currentParticipants);
         }

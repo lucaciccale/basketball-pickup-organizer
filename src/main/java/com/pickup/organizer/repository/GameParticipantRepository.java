@@ -12,6 +12,6 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
         + "FROM GameParticipant gp "
         + "WHERE gp.game.id = :gameId"
     )
-    Long countByGameId(Long gameId);
+    Integer countByGameId(Long gameId);
 
 }
