@@ -136,15 +136,30 @@ public class GameService {
             .replaceAll("\\s+", " ");
     }
 
+    private void validateJoinable(Game game, JoinGameDto dto) {
+        GameStatus status = game.getStatus();
+        if (
+            status == GameStatus.COMPLETED
+            || status == GameStatus.FULL
+            || status == GameStatus.IN_PROGRESS
+            || status == GameStatus.CANCELLED
+        ) {
+            throw new GameJoinException(status);
+        }
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusMinutes(MIN_MINS_IN_ADVANCE);
+        if (game.getDateTime().isBefore(minAllowedTime)) {
+            throw new GameJoinException("Cannot join a game less than '" + MIN_MINS_IN_ADVANCE + "' minutes in advance.");
+        }
+    }
+
     private void validateCancelable(Game game) {
-        if (game.getDateTime().isBefore(LocalDateTime.now())) {
-            throw new GameCancellationException("Cannot cancel a game that has already finished.");
-        }
-        if (game.getStatus() == GameStatus.IN_PROGRESS) {
-            throw new GameCancellationException("Cannot cancel a game that is already in progress.");
-        }
-        if (game.getStatus() == GameStatus.CANCELLED) {
-            throw new GameCancellationException("Cannot cancel a game that is already cancelled.");
+        GameStatus status = game.getStatus();
+        if (
+            status == GameStatus.COMPLETED
+            || status == GameStatus.IN_PROGRESS
+            || status == GameStatus.CANCELLED
+        ) {
+            throw new GameCancellationException(status);
         }
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
@@ -162,14 +177,13 @@ public class GameService {
     }
 
     private void validateUpdatable(Game game) {
-        if (game.getDateTime().isBefore(LocalDateTime.now())) {
-            throw new GameUpdateException("Cannot update a game that has already finished.");
-        }
-        if (game.getStatus() == GameStatus.IN_PROGRESS) {
-            throw new GameUpdateException("Cannot update a game that is already in progress.");
-        }
-        if (game.getStatus() == GameStatus.CANCELLED) {
-            throw new GameUpdateException("Cannot update a game that is already cancelled.");
+        GameStatus status = game.getStatus();
+        if (
+            status == GameStatus.COMPLETED
+            || status == GameStatus.IN_PROGRESS
+            || status == GameStatus.CANCELLED
+        ) {
+            throw new GameUpdateException(status);
         }
     }
 
