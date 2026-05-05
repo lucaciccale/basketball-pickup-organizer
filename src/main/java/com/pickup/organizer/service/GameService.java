@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 
 import com.pickup.organizer.dto.game.*;
 import com.pickup.organizer.entity.Game;
+import com.pickup.organizer.entity.GameParticipant;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
 import com.pickup.organizer.repository.GameParticipantRepository;
@@ -25,8 +26,10 @@ public class GameService {
 
     private final GameRepository repository;
     private final GameParticipantRepository participantRepository;
+    private final PlayerService playerService;
 
     public static final int GAME_DURATION_HRS = 2;
+    public static final int MIN_MINS_IN_ADVANCE = 30;
     public static final int MIN_HRS_IN_ADVANCE = 1;
     public static final int MIN_DAYS_IN_ADVANCE = 2;
     public static final int MAX_DAYS_IN_ADVANCE = 30;
@@ -41,6 +44,19 @@ public class GameService {
             .status(GameStatus.OPEN)
             .build();
         return repository.save(game);
+    }
+
+    @Transactional
+    public Game joinGame(Long id, JoinGameDto dto) {
+        Game game = findGameById(id);
+        validateJoinable(game, dto);
+        GameParticipant participant = GameParticipant.builder()
+            .player(playerService.findPlayerById(dto.getPlayerId()))
+            .game(game)
+            .skillRating(dto.getSkillRating())
+            .build();
+        participantRepository.save(participant);
+        return game;
     }
     
     @Transactional
@@ -138,17 +154,15 @@ public class GameService {
 
     private void validateJoinable(Game game, JoinGameDto dto) {
         GameStatus status = game.getStatus();
-        if (
-            status == GameStatus.COMPLETED
-            || status == GameStatus.FULL
-            || status == GameStatus.IN_PROGRESS
-            || status == GameStatus.CANCELLED
-        ) {
+        if (status != GameStatus.OPEN) {
             throw new GameJoinException(status);
         }
         LocalDateTime minAllowedTime = LocalDateTime.now().plusMinutes(MIN_MINS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameJoinException("Cannot join a game less than '" + MIN_MINS_IN_ADVANCE + "' minutes in advance.");
+        }
+        if (participantRepository.existsPlayerAtGame(dto.getPlayerId(), game.getId())) {
+            throw new GameJoinException("Cannot join. Player is already part of this game.");
         }
     }
 

@@ -47,6 +47,15 @@ public class GameController {
         return ResponseEntity.created(uri).body(assembler.toModel(game));
     }
 
+    @PostMapping("/{id}/participants")
+    public ResponseEntity<GameModel> joinGame(
+        @PathVariable Long id,
+        @Valid @RequestBody JoinGameDto dto
+    ) {
+        Game game = service.joinGame(id, dto);
+        return ResponseEntity.ok(assembler.toModel(game));
+    }
+
     @PostMapping("/{id}/cancel")
     public ResponseEntity<GameModel> cancelGame(@PathVariable Long id) {
         Game game = service.cancelGame(id);

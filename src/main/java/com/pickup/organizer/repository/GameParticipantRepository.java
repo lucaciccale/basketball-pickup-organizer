@@ -14,4 +14,12 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
     )
     Integer countByGameId(Long gameId);
 
+    @Query(
+        "SELECT COUNT(gp) > 0 "
+        + "FROM GameParticipant gp "
+        + "WHERE gp.game.id = :gameId "
+        + "AND gp.player.id = :playerId"
+    )
+    boolean existsPlayerAtGame(Long playerId, Long gameId);
+
 }
