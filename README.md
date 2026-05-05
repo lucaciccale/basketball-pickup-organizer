@@ -62,6 +62,7 @@ DB_PASSWORD=your_password
 ### Games
 - `POST /games`
 - `POST /games/{id}/cancel`
+- `POST /games/{id}/participants`
 - `GET /games/{id}`
 - `GET /games (params: [status], [from], [to], [page=0], [size=2])`
 - `PATCH /games/{id}`
