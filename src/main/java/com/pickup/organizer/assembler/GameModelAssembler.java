@@ -9,6 +9,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static com.pickup.organizer.service.GameService.MIN_HRS_IN_ADVANCE;
+import static com.pickup.organizer.service.GameService.MIN_MINS_IN_ADVANCE;
 
 import com.pickup.organizer.controller.GameController;
 import com.pickup.organizer.entity.Game;
@@ -39,6 +40,11 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
                 .cancelGame(game.getId())).withRel("cancel"));
         }
 
+        if (isJoinable(game)) {
+            model.add(linkTo(methodOn(GameController.class)
+                .joinGame(game.getId(), null)).withRel("join"));
+        }
+
         return model;
     }
 
@@ -46,6 +52,12 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         return game.getDateTime().isAfter(minAllowedTime)
             && (game.getStatus() == GameStatus.OPEN || game.getStatus() == GameStatus.FULL);
+    }
+
+    private boolean isJoinable(Game game) {
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusMinutes(MIN_MINS_IN_ADVANCE);
+        return game.getDateTime().isAfter(minAllowedTime)
+            && game.getStatus() == GameStatus.OPEN;
     }
 
 }
