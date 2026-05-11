@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 import com.pickup.organizer.dto.game.*;
-import com.pickup.organizer.entity.Game;
-import com.pickup.organizer.entity.GameParticipant;
+import com.pickup.organizer.entity.*;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
 import com.pickup.organizer.repository.GameParticipantRepository;
@@ -49,9 +48,10 @@ public class GameService {
     @Transactional
     public Game joinGame(Long id, JoinGameDto dto) {
         Game game = findGameById(id);
+        Player player = playerService.findPlayerById(dto.getPlayerId());
         validateJoinable(game, dto);
         GameParticipant participant = GameParticipant.builder()
-            .player(playerService.findPlayerById(dto.getPlayerId()))
+            .player(player)
             .game(game)
             .skillRating(dto.getSkillRating())
             .build();
