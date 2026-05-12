@@ -84,6 +84,13 @@ public class PlayerService {
         repository.delete(findPlayerById(id));
     }
 
+    public void checkPlayerExistence(Long id) {
+        boolean exists = repository.existsById(id);
+        if (!exists) {
+            throw new PlayerNotFoundException(id);
+        }
+    }
+
     private void checkEmailUniqueness(String email, Long id) {
         boolean exists = (id == null)
             ? repository.existsByEmail(email)
