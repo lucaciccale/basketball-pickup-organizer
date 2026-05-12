@@ -9,6 +9,9 @@
 
 ---
 
+> [!WARNING]
+> **Work in Progress:** This project is currently under active development and is **not ready for production use**.
+
 ### 🌟 Overview
 A robust backend service built with **Java** and **Spring Boot** designed to streamline pickup basketball organization. It enables players to register, create games, and join matches with an automated team balancing system based on skill levels.
 
