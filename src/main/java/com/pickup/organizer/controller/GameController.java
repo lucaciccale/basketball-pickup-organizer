@@ -47,7 +47,7 @@ public class GameController {
         return ResponseEntity.created(uri).body(assembler.toModel(game));
     }
 
-    @PostMapping("/{id}/participants")
+    @PostMapping("/{id}/players")
     public ResponseEntity<GameModel> joinGame(
         @PathVariable Long id,
         @Valid @RequestBody JoinGameDto dto
@@ -89,7 +89,7 @@ public class GameController {
         return ResponseEntity.ok(assembler.toModel(game));
     }
     
-    @DeleteMapping("/{gameId}/participants/{playerId}")
+    @DeleteMapping("/{gameId}/players/{playerId}")
     public ResponseEntity<GameModel> leaveGame(
         @PathVariable Long gameId,
         @PathVariable Long playerId
