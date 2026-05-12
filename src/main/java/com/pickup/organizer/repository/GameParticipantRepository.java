@@ -12,7 +12,7 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
         + "FROM GameParticipant gp "
         + "WHERE gp.game.id = :gameId"
     )
-    Integer countByGameId(Long gameId);
+    Integer countPlayersAtGame(Long gameId);
 
     @Query(
         "SELECT COUNT(gp) > 0 "

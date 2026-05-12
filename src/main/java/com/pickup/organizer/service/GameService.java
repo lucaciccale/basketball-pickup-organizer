@@ -163,12 +163,12 @@ public class GameService {
         if (status != GameStatus.OPEN) {
             throw new GameJoinException(status);
         }
+        if (participantRepository.existsPlayerAtGame(dto.getPlayerId(), game.getId())) {
+            throw new GameJoinException("Cannot join. Player is already part of this game.");
+        }
         LocalDateTime minAllowedTime = LocalDateTime.now().plusMinutes(MIN_MINS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameJoinException("Cannot join a game less than '" + MIN_MINS_IN_ADVANCE + "' minutes in advance.");
-        }
-        if (participantRepository.existsPlayerAtGame(dto.getPlayerId(), game.getId())) {
-            throw new GameJoinException("Cannot join. Player is already part of this game.");
         }
     }
 
@@ -202,7 +202,7 @@ public class GameService {
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameUpdateException("Game capacity must be updated at least '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
         }
-        Integer currentParticipants = participantRepository.countByGameId(game.getId());
+        Integer currentParticipants = participantRepository.countPlayersAtGame(game.getId());
         if (dto.getMaxPlayers() < currentParticipants) {
             throw new InvalidCapacityException(dto.getMaxPlayers(), currentParticipants);
         }
