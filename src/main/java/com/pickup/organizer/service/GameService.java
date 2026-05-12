@@ -27,6 +27,17 @@ public class GameService {
     private final GameParticipantRepository participantRepository;
     private final PlayerService playerService;
 
+    private static final List<GameStatus> VALID_STATUSES = List.of(
+        GameStatus.OPEN,
+        GameStatus.FULL,
+        GameStatus.IN_PROGRESS
+    );
+    private static final List<GameStatus> TERMINAL_STATUSES = List.of(
+        GameStatus.COMPLETED,
+        GameStatus.IN_PROGRESS,
+        GameStatus.CANCELLED
+    );
+
     public static final int GAME_DURATION_HRS = 2;
     public static final int MIN_MINS_IN_ADVANCE = 30;
     public static final int MIN_HRS_IN_ADVANCE = 1;
@@ -129,14 +140,9 @@ public class GameService {
     private void ensureNoOverlappingGames(String location, LocalDateTime dateTime, Long excludeId) {
         LocalDateTime startMinusGameDuration = dateTime.minusHours(GAME_DURATION_HRS);
         LocalDateTime startPlusGameDuration = dateTime.plusHours(GAME_DURATION_HRS);
-        List<GameStatus> statuses = List.of(
-            GameStatus.OPEN,
-            GameStatus.FULL,
-            GameStatus.IN_PROGRESS
-        );
         if (repository.existsOverlappingGameAtLocation(
                 location,
-                statuses,
+                VALID_STATUSES,
                 startMinusGameDuration,
                 startPlusGameDuration,
                 excludeId
@@ -167,13 +173,8 @@ public class GameService {
     }
 
     private void validateCancelable(Game game) {
-        GameStatus status = game.getStatus();
-        if (
-            status == GameStatus.COMPLETED
-            || status == GameStatus.IN_PROGRESS
-            || status == GameStatus.CANCELLED
-        ) {
-            throw new GameCancellationException(status);
+        if (TERMINAL_STATUSES.contains(game.getStatus())) {
+            throw new GameCancellationException(game.getStatus());
         }
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
@@ -191,13 +192,8 @@ public class GameService {
     }
 
     private void validateUpdatable(Game game) {
-        GameStatus status = game.getStatus();
-        if (
-            status == GameStatus.COMPLETED
-            || status == GameStatus.IN_PROGRESS
-            || status == GameStatus.CANCELLED
-        ) {
-            throw new GameUpdateException(status);
+        if (TERMINAL_STATUSES.contains(game.getStatus())) {
+            throw new GameUpdateException(game.getStatus());
         }
     }
 
@@ -221,7 +217,9 @@ public class GameService {
 
     private void validateLocationUpdate(Game game, GameUpdateDto dto) {
         LocalDateTime minAllowedTime = LocalDateTime.now().plusDays(MIN_DAYS_IN_ADVANCE);
-        LocalDateTime dateTime = dto.getDateTime() != null ? dto.getDateTime() : game.getDateTime();
+        LocalDateTime dateTime = dto.getDateTime() != null 
+            ? dto.getDateTime()
+            : game.getDateTime();
         if (dateTime.isBefore(minAllowedTime)) {
             throw new GameUpdateException("Game location must be updated at least '" + MIN_DAYS_IN_ADVANCE + "' days in advance.");
         }
