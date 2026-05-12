@@ -162,6 +162,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(GameLeaveException.class)
+    public ResponseEntity<ApiError> handleGameLeaveException(GameLeaveException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(InvalidCapacityException.class)
     public ResponseEntity<ApiError> handleInvalidCapacityException(InvalidCapacityException ex, HttpServletRequest request) {
         return buildError(

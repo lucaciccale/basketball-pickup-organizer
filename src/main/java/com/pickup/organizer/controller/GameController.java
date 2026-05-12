@@ -89,6 +89,15 @@ public class GameController {
         return ResponseEntity.ok(assembler.toModel(game));
     }
     
+    @DeleteMapping("/{gameId}/participants/{playerId}")
+    public ResponseEntity<GameModel> leaveGame(
+        @PathVariable Long gameId,
+        @PathVariable Long playerId
+    ) {
+        Game game = service.leaveGame(gameId, playerId);
+        return ResponseEntity.ok(assembler.toModel(game));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         service.deleteGame(id);

@@ -117,6 +117,15 @@ public class GameService {
     }
 
     @Transactional
+    public Game leaveGame(Long gameId, Long playerId) {
+        Game game = findGameById(gameId);
+        playerService.checkPlayerExistence(playerId);
+        validateAbleToLeave(game, playerId);
+        participantRepository.deletePlayerAtGame(gameId, playerId);
+        return game;
+    }
+
+    @Transactional
     public void deleteGame(Long id) {
         repository.delete(findGameById(id));
     }
@@ -224,6 +233,19 @@ public class GameService {
             throw new GameUpdateException("Game location must be updated at least '" + MIN_DAYS_IN_ADVANCE + "' days in advance.");
         }
         ensureNoOverlappingGames(normalizeLocation(dto.getLocation()), dateTime, game.getId());
+    }
+
+    private void validateAbleToLeave(Game game, Long playerId) {
+        if (TERMINAL_STATUSES.contains(game.getStatus())) {
+            throw new GameLeaveException(game.getStatus());
+        }
+        if (!participantRepository.existsPlayerAtGame(playerId, game.getId())) {
+            throw new GameLeaveException("Cannot leave a game that your're not participating in.");
+        }
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
+        if (game.getDateTime().isBefore(minAllowedTime)) {
+            throw new GameLeaveException("Cannot leave the game less than '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
+        }
     }
 
 }
