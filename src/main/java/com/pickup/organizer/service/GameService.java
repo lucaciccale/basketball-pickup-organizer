@@ -67,6 +67,7 @@ public class GameService {
             .skillRating(dto.getSkillRating())
             .build();
         participantRepository.save(participant);
+        refreshGameStatus(game);
         return game;
     }
     
@@ -113,6 +114,7 @@ public class GameService {
             validateDateTimeUpdate(game, dto);
             game.setDateTime(dto.getDateTime());
         }
+        refreshGameStatus(game);
         return repository.save(game);
     }
 
@@ -122,6 +124,7 @@ public class GameService {
         playerService.checkPlayerExistence(playerId);
         validateAbleToLeave(game, playerId);
         participantRepository.deletePlayerAtGame(gameId, playerId);
+        refreshGameStatus(game);
         return game;
     }
 
@@ -245,6 +248,16 @@ public class GameService {
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameLeaveException("Cannot leave the game less than '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
+        }
+    }
+
+    private void refreshGameStatus(Game game) {
+        Integer currentPlayers = participantRepository.countPlayersAtGame(game.getId());
+        if (currentPlayers < game.getMaxPlayers()) {
+            game.setStatus(GameStatus.OPEN);
+        }
+        else if (currentPlayers == game.getMaxPlayers()) {
+            game.setStatus(GameStatus.FULL);
         }
     }
 
