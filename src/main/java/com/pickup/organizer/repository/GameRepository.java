@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.pickup.organizer.entity.Game;
@@ -27,5 +28,25 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
         LocalDateTime startPlusGameDuration,
         Long excludeId
     );
+
+    @Modifying
+    @Query(
+        "UPDATE Game g "
+        + "SET g.status = 'IN_PROGRESS' "
+        + "WHERE (g.status = 'OPEN' OR g.status = 'FULL') "
+        + "AND g.dateTime > :nowMinusGameDuration "
+        + "AND g.dateTime < :now"
+    )
+    void updateInProgressStatus(LocalDateTime now, LocalDateTime nowMinusGameDuration);
+
+    @Modifying
+    @Query(
+        "UPDATE Game g "
+        + "SET g.status = 'COMPLETED' "
+        + "WHERE g.status <> 'COMPLETED' "
+        + "AND g.status <> 'CANCELLED' "
+        + "AND g.dateTime < :nowMinusGameDuration"
+    )
+    void updateCompletedStatus(LocalDateTime now, LocalDateTime nowMinusGameDuration);
 
 }

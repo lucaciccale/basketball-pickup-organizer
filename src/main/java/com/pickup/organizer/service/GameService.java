@@ -2,10 +2,12 @@ package com.pickup.organizer.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,14 @@ public class GameService {
     public static final int MIN_HRS_IN_ADVANCE = 1;
     public static final int MIN_DAYS_IN_ADVANCE = 2;
     public static final int MAX_DAYS_IN_ADVANCE = 30;
+
+    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 5)
+    @Transactional
+    public void updateTemporalStatuses() {
+        LocalDateTime nowMinusGameDuration = LocalDateTime.now().minusHours(GAME_DURATION_HRS);
+        repository.updateInProgressStatus(LocalDateTime.now(), nowMinusGameDuration);
+        repository.updateCompletedStatus(LocalDateTime.now(), nowMinusGameDuration);
+    }
     
     @Transactional
     public Game createGame(GameCreateDto newGame) {
@@ -132,7 +142,7 @@ public class GameService {
     public void deleteGame(Long id) {
         repository.delete(findGameById(id));
     }
-    
+
     private void validateNewGame(GameCreateDto newGame) {
         validateGameTime(newGame.getDateTime());
         ensureNoOverlappingGames(normalizeLocation(newGame.getLocation()), newGame.getDateTime(), null);
