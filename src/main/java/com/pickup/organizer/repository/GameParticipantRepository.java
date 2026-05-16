@@ -9,13 +9,6 @@ import com.pickup.organizer.entity.GameParticipant;
 public interface GameParticipantRepository extends JpaRepository<GameParticipant, Long> {
 
     @Query(
-        "SELECT COUNT(gp) "
-        + "FROM GameParticipant gp "
-        + "WHERE gp.game.id = :gameId"
-    )
-    Integer countPlayersAtGame(Long gameId);
-
-    @Query(
         "SELECT COUNT(gp) > 0 "
         + "FROM GameParticipant gp "
         + "WHERE gp.game.id = :gameId "

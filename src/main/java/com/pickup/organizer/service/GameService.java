@@ -77,6 +77,7 @@ public class GameService {
             .skillRating(dto.getSkillRating())
             .build();
         participantRepository.save(participant);
+        game.setCurrentPlayers(game.getCurrentPlayers() + 1);
         refreshGameStatus(game);
         return game;
     }
@@ -134,6 +135,7 @@ public class GameService {
         playerService.checkPlayerExistence(playerId);
         validateAbleToLeave(game, playerId);
         participantRepository.deletePlayerAtGame(gameId, playerId);
+        game.setCurrentPlayers(game.getCurrentPlayers() - 1);
         refreshGameStatus(game);
         return game;
     }
@@ -224,9 +226,8 @@ public class GameService {
         if (game.getDateTime().isBefore(minAllowedTime)) {
             throw new GameUpdateException("Game capacity must be updated at least '" + MIN_HRS_IN_ADVANCE + "' hour/s in advance.");
         }
-        Integer currentParticipants = participantRepository.countPlayersAtGame(game.getId());
-        if (dto.getMaxPlayers() < currentParticipants) {
-            throw new InvalidCapacityException(dto.getMaxPlayers(), currentParticipants);
+        if (dto.getMaxPlayers() < game.getCurrentPlayers()) {
+            throw new InvalidCapacityException(dto.getMaxPlayers(), game.getCurrentPlayers());
         }
     }
 
@@ -262,11 +263,10 @@ public class GameService {
     }
 
     private void refreshGameStatus(Game game) {
-        Integer currentPlayers = participantRepository.countPlayersAtGame(game.getId());
-        if (currentPlayers < game.getMaxPlayers()) {
+        if (game.getCurrentPlayers() < game.getMaxPlayers()) {
             game.setStatus(GameStatus.OPEN);
         }
-        else if (currentPlayers == game.getMaxPlayers()) {
+        else if (game.getCurrentPlayers() == game.getMaxPlayers()) {
             game.setStatus(GameStatus.FULL);
         }
     }
