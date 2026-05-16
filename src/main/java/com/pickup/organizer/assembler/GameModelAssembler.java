@@ -8,6 +8,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import static com.pickup.organizer.service.GameService.TERMINAL_STATUSES;
 import static com.pickup.organizer.service.GameService.MIN_HRS_IN_ADVANCE;
 import static com.pickup.organizer.service.GameService.MIN_MINS_IN_ADVANCE;
 
@@ -35,7 +36,7 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
         model.add(linkTo(methodOn(GameController.class)
             .getGame(game.getId())).withSelfRel());
 
-        if (isCancellable(game)) {
+        if (isCancelable(game)) {
             model.add(linkTo(methodOn(GameController.class)
                 .cancelGame(game.getId())).withRel("cancel"));
         }
@@ -48,10 +49,10 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
         return model;
     }
 
-    private boolean isCancellable(Game game) {
+    private boolean isCancelable(Game game) {
         LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
         return game.getDateTime().isAfter(minAllowedTime)
-            && (game.getStatus() == GameStatus.OPEN || game.getStatus() == GameStatus.FULL);
+            && !TERMINAL_STATUSES.contains(game.getStatus());
     }
 
     private boolean isJoinable(Game game) {

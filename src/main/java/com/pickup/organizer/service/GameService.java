@@ -29,15 +29,15 @@ public class GameService {
     private final GameParticipantRepository participantRepository;
     private final PlayerService playerService;
 
+    public static final List<GameStatus> TERMINAL_STATUSES = List.of(
+        GameStatus.COMPLETED,
+        GameStatus.IN_PROGRESS,
+        GameStatus.CANCELLED
+    );
     private static final List<GameStatus> VALID_STATUSES = List.of(
         GameStatus.OPEN,
         GameStatus.FULL,
         GameStatus.IN_PROGRESS
-    );
-    private static final List<GameStatus> TERMINAL_STATUSES = List.of(
-        GameStatus.COMPLETED,
-        GameStatus.IN_PROGRESS,
-        GameStatus.CANCELLED
     );
 
     public static final int GAME_DURATION_HRS = 2;
