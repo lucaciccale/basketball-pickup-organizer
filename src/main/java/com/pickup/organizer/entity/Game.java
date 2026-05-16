@@ -43,6 +43,10 @@ public class Game {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Integer currentPlayers = 0;
+
     @NotNull(message = "Maximum number of players is required!")
     @Min(value = 4, message = "Minimum number of players is 4 (2v2).")
     @Max(value = 10, message = "Maximum number of players is 10 (5v5).")
