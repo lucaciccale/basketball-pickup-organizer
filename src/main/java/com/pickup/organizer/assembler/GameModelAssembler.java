@@ -29,6 +29,7 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
             game.getId(),
             game.getLocation(),
             game.getDateTime(),
+            game.getCurrentPlayers(),
             game.getMaxPlayers(),
             game.getStatus()
         );

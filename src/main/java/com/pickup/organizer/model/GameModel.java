@@ -21,7 +21,9 @@ public class GameModel extends RepresentationModel<GameModel> {
 
     private LocalDateTime dateTime;
 
-    private int maxPlayers;
+    private Integer currentPlayers;
+
+    private Integer maxPlayers;
 
     private GameStatus status;
 
