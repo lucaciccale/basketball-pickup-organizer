@@ -36,14 +36,19 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
         model.add(linkTo(methodOn(GameController.class)
             .getGame(game.getId())).withSelfRel());
 
-        if (isCancelable(game)) {
-            model.add(linkTo(methodOn(GameController.class)
-                .cancelGame(game.getId())).withRel("cancel"));
-        }
-
         if (isJoinable(game)) {
             model.add(linkTo(methodOn(GameController.class)
                 .joinGame(game.getId(), null)).withRel("join"));
+        }
+
+        if (isAbleToLeave(game)) {
+            model.add(linkTo(methodOn(GameController.class)
+                .leaveGame(game.getId(), null)).withRel("leave"));
+        }
+
+        if (isCancelable(game)) {
+            model.add(linkTo(methodOn(GameController.class)
+                .cancelGame(game.getId())).withRel("cancel"));
         }
 
         return model;
@@ -59,6 +64,13 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
         LocalDateTime minAllowedTime = LocalDateTime.now().plusMinutes(MIN_MINS_IN_ADVANCE);
         return game.getDateTime().isAfter(minAllowedTime)
             && game.getStatus() == GameStatus.OPEN;
+    }
+
+    private boolean isAbleToLeave(Game game) {
+        LocalDateTime minAllowedTime = LocalDateTime.now().plusHours(MIN_HRS_IN_ADVANCE);
+        return game.getCurrentPlayers() != 0
+            && game.getDateTime().isAfter(minAllowedTime)
+            && !TERMINAL_STATUSES.contains(game.getStatus());
     }
 
 }
