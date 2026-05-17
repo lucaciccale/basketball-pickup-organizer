@@ -271,4 +271,10 @@ public class GameService {
         }
     }
 
+    public void checkGameExistence(Long id) {
+        if (!repository.existsById(id)) {
+            throw new GameNotFoundException(id);
+        }
+    }
+
 }
