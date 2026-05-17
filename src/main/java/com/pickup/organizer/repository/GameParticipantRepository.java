@@ -1,5 +1,7 @@
 package com.pickup.organizer.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +24,14 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
         + "WHERE gp.game.id = :gameId "
     )
     boolean existsAnyPlayerAtGame(Long gameId);
+
+    @Query(
+        "SELECT gp "
+        + "FROM GameParticipant gp "
+        + "WHERE gp.game.id = :gameId "
+        + "AND gp.player.id = :playerId"
+    )
+    Optional<GameParticipant> findPlayerAtGame(Long gameId, Long playerId);
 
     @Modifying
     @Query(

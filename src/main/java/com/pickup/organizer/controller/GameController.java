@@ -25,10 +25,13 @@ import lombok.AllArgsConstructor;
 import jakarta.validation.Valid;
 
 import com.pickup.organizer.assembler.GameModelAssembler;
+import com.pickup.organizer.assembler.GameParticipantModelAssembler;
 import com.pickup.organizer.dto.game.*;
 import com.pickup.organizer.entity.Game;
+import com.pickup.organizer.entity.GameParticipant;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.model.GameModel;
+import com.pickup.organizer.model.GameParticipantModel;
 import com.pickup.organizer.service.GameService;
 
 @RestController
@@ -39,6 +42,8 @@ public class GameController {
     private final GameService service;
     private final GameModelAssembler assembler;
     private final PagedResourcesAssembler<Game> pagedResourcesAssembler;
+
+    private final GameParticipantModelAssembler participantAssembler;
 
     @PostMapping()
     public ResponseEntity<GameModel> createGame(@Valid @RequestBody GameCreateDto newGame) {
@@ -78,6 +83,15 @@ public class GameController {
     ) {
         Page<Game> games = service.searchGames(status, from, to, page, size);
         return ResponseEntity.ok(pagedResourcesAssembler.toModel(games, assembler));
+    }
+
+    @GetMapping("/{gameId}/players/{playerId}")
+    public ResponseEntity<GameParticipantModel> getParticipant(
+        @PathVariable Long gameId,
+        @PathVariable Long playerId
+    ) {
+        GameParticipant participant = service.findParticipant(gameId, playerId);
+        return ResponseEntity.ok(participantAssembler.toModel(participant));
     }
 
     @PatchMapping("/{id}")

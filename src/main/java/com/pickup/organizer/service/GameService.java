@@ -17,6 +17,7 @@ import com.pickup.organizer.dto.game.*;
 import com.pickup.organizer.entity.*;
 import com.pickup.organizer.enums.GameStatus;
 import com.pickup.organizer.exception.game.*;
+import com.pickup.organizer.exception.game.participant.*;
 import com.pickup.organizer.repository.GameParticipantRepository;
 import com.pickup.organizer.repository.GameRepository;
 import com.pickup.organizer.specification.GameSpecifications;
@@ -101,6 +102,13 @@ public class GameService {
             .where(GameSpecifications.hasStatus(status))
             .and(GameSpecifications.isBetween(from, to));
         return repository.findAll(spec, PageRequest.of(page, size));
+    }
+
+    public GameParticipant findParticipant(Long gameId, Long playerId) {
+        checkGameExistence(gameId);
+        playerService.checkPlayerExistence(playerId);
+        return participantRepository.findPlayerAtGame(gameId, playerId)
+            .orElseThrow(() -> new GameParticipantNotFoundException(gameId, playerId));
     }
 
     @Transactional

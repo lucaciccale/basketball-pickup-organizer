@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import com.pickup.organizer.exception.player.*;
 import com.pickup.organizer.exception.game.*;
+import com.pickup.organizer.exception.game.participant.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -175,6 +176,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleInvalidCapacityException(InvalidCapacityException ex, HttpServletRequest request) {
         return buildError(
             HttpStatus.CONFLICT,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(GameParticipantNotFoundException.class)
+    public ResponseEntity<ApiError> handleGameParticipantNotFoundException(GameParticipantNotFoundException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.NOT_FOUND,
             ex.getMessage(),
             request.getRequestURI()
         );
