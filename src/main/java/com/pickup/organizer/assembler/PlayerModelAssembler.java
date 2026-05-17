@@ -25,7 +25,11 @@ public class PlayerModelAssembler extends RepresentationModelAssemblerSupport<Pl
             player.getEmail(),
             player.getBirthDate()
         );
-        model.add(linkTo(methodOn(PlayerController.class).getPlayer(player.getId())).withSelfRel());
+
+        model.add(linkTo(methodOn(PlayerController.class)
+            .getPlayer(player.getId()))
+                .withSelfRel());
+
         return model;
     }
 

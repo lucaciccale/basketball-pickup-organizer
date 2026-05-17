@@ -39,17 +39,20 @@ public class GameModelAssembler extends RepresentationModelAssemblerSupport<Game
 
         if (isJoinable(game)) {
             model.add(linkTo(methodOn(GameController.class)
-                .joinGame(game.getId(), null)).withRel("join"));
+                .joinGame(game.getId(), null))
+                    .withRel("join"));
         }
 
         if (isAbleToLeave(game)) {
             model.add(linkTo(methodOn(GameController.class)
-                .leaveGame(game.getId(), null)).withRel("leave"));
+                .leaveGame(game.getId(), null))
+                    .withRel("leave"));
         }
 
         if (isCancelable(game)) {
             model.add(linkTo(methodOn(GameController.class)
-                .cancelGame(game.getId())).withRel("cancel"));
+                .cancelGame(game.getId()))
+                    .withRel("cancel"));
         }
 
         return model;
