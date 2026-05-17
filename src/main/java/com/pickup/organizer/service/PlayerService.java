@@ -85,8 +85,7 @@ public class PlayerService {
     }
 
     public void checkPlayerExistence(Long id) {
-        boolean exists = repository.existsById(id);
-        if (!exists) {
+        if (!repository.existsById(id)) {
             throw new PlayerNotFoundException(id);
         }
     }
