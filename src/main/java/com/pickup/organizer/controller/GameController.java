@@ -44,6 +44,7 @@ public class GameController {
     private final PagedResourcesAssembler<Game> pagedResourcesAssembler;
 
     private final GameParticipantModelAssembler participantAssembler;
+    private final PagedResourcesAssembler<GameParticipant> participantPagedResourcesAssembler;
 
     @PostMapping()
     public ResponseEntity<GameModel> createGame(@Valid @RequestBody GameCreateDto newGame) {
@@ -92,6 +93,16 @@ public class GameController {
     ) {
         GameParticipant participant = service.findParticipant(gameId, playerId);
         return ResponseEntity.ok(participantAssembler.toModel(participant));
+    }
+
+    @GetMapping("/{id}/players")
+    public ResponseEntity<PagedModel<GameParticipantModel>> getParticipants(
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0", required = false) int page,
+        @RequestParam(defaultValue = "2", required = false) int size
+    ) {
+        Page<GameParticipant> participants = service.searchParticipants(id, page, size);
+        return ResponseEntity.ok(participantPagedResourcesAssembler.toModel(participants, participantAssembler));
     }
 
     @PatchMapping("/{id}")

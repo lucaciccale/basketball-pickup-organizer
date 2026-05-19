@@ -111,6 +111,11 @@ public class GameService {
             .orElseThrow(() -> new GameParticipantNotFoundException(gameId, playerId));
     }
 
+    public Page<GameParticipant> searchParticipants(Long id, int page, int size) {
+        checkGameExistence(id);
+        return participantRepository.searchPlayersAtGame(id, PageRequest.of(page, size));
+    }
+
     @Transactional
     public Game updateGame(Long id, GameUpdateDto dto) {
         Game game = findGameById(id);
