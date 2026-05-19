@@ -90,6 +90,7 @@ A robust backend service built with **Java** and **Spring Boot** designed to str
 | `GET` | `/games/{id}` | **List** game details |
 | `GET` | `/games` | **List** games (status, from, to, page, size) |
 | `GET` | `/games/{gameId}/players/{playerId}` | **List** game participant details |
+| `GET` | `/games/{id}/players` | **List** all participants in a game with their details |
 | `PATCH` | `/games/{id}` | **Update** game details |
 | `DELETE` | `/games/{gameId}/players/{playerId}` | **Leave** a game |
 | `DELETE` | `/games/{id}` | **Delete** a game |
